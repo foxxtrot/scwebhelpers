@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+    <title>Generic Base Converter Tests</title>
+    <script src="http://yui.yahooapis.com/3.3.0/build/yui/yui-min.js"></script>
+    <script type="text/javascript" src="../baseconv.js"></script>
+</head>
+<body>
+    <script type="text/javascript">
+YUI({useBrowserConsole: true}).use('test', 'baseconv', function(Y) {
+    var Assert = Y.Assert,
+        suite = new Y.Test.Suite("Generic Base Converter Tests");
+    suite.add(new Y.Test.Case({
+        name: "Decimal Tests",
+        setUp: function() {
+            this.converter = Y.BaseConverter("0123456789");
+        },
+        tearDown: function() {
+            this.converter = undefined;
+        },
+        "encode should return a string": function() {
+            var result = this.converter.encode(5);
+            Assert.isString(result);
+            Assert.areEqual(result.length, 1);
+            Assert.areEqual(result, "5");
+        },
+        "encode should work with long numbers": function() {
+            var result = this.converter.encode(123152);
+            Assert.isString(result);
+            Assert.areEqual(result.length, 6);
+            Assert.areEqual(result, "123152");
+        },
+        "decode should return a number": function() {
+            var result = this.converter.decode("5");
+            Assert.isNumber(result);
+            Assert.areEqual(result, 5);
+            Assert.areEqual(123152, this.converter.decode("123152"));
+        }
+    }));
+    suite.add(new Y.Test.Case({
+        name: "Hexadecimal Tests",
+        setUp: function() {
+            this.converter = Y.BaseConverter("0123456789abcdef");
+        },
+        tearDown: function() {
+            this.converter = undefined;
+        },
+        "encode should return a string": function() {
+            var result = this.converter.encode(5);
+            Assert.isString(result);
+            Assert.areEqual(result.length, 1);
+            Assert.areEqual(result, "5");
+        },
+        "encode should work with long numbers": function() {
+            var value = 123152, asHex = value.toString(16),
+                result = this.converter.encode(value);
+            Assert.isString(result);
+            Assert.areEqual(asHex.length, result.length);
+            Assert.areEqual(asHex, result);
+        },
+        "decode should return a number": function() {
+            var result = this.converter.decode("5");
+            Assert.isNumber(result);
+            Assert.areEqual(result, 5);
+            Assert.areEqual(1192274, this.converter.decode("123152"));
+        }
+    }));
+    suite.add(new Y.Test.Case({
+        name: "Base25 Tests",
+        setUp: function() {
+            this.converter = Y.BaseConverter("0123456789abcdefghijklmno");
+        },
+        tearDown: function() {
+            this.converter = undefined;
+        },
+        "encode should return a string": function() {
+            var result = this.converter.encode(5);
+            Assert.isString(result);
+            Assert.areEqual(result.length, 1);
+            Assert.areEqual(result, "5");
+        },
+        "encode should work with long numbers": function() {
+            var value = 688556, expected = "1j1h6",
+                result = this.converter.encode(value);
+            Assert.isString(result);
+            Assert.areEqual(expected.length, result.length);
+            Assert.areEqual(expected, result);
+        },
+        "decode should return a number": function() {
+            var result = this.converter.decode("5");
+            Assert.isNumber(result);
+            Assert.areEqual(result, 5);
+            Assert.areEqual(688556, this.converter.decode("1j1h6"));
+        }
+    }));
+    Y.Test.Runner.add(suite);
+    Y.Test.Runner.run();
+});
+    </script>
+</body>
+</html>

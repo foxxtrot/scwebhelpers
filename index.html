@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Star Conquest Helpers</title>
+</head>
+<body>
+    <header>
+        <h1>Foxxtrot's Star Conquest Helpers</h1>
+        <h2>A collection of helpful utilities that make Star Conquest better for me</h2>
+        <p>This page is a collection of helper utilities for Popular Text-Based Internet Spaceship game <a href="http://web.squidsoft.net/">Star Conquest</a>. These utilities are provided by me, foxxtrot, and are completely without guarantee, as the Squidsoft Staff could change any of the things that I assume to be true at any time, and my assumptions could be flat wrong in the first place!<p>
+    </header>
+    <noscript>
+        <section id="noJS">
+            <h1>You don't have JavaScript Enabled!</h1>
+            <p>These utilities require JavaScript. Basically nothing on this page is going to work for you until you re-enable JavaScript. Since you had to disable it, I assume you can manage to re-enable it.</p>
+        </section>
+    </noscript>
+    <section id="currentTime" class="widget time" style="display: none;">
+        <h3>Current Game Time is:</h3>
+        <ul>
+        </ul>
+    </section>
+
+    <script src="http://yui.yahooapis.com/combo?3.3.0/build/yui/yui-min.js&3.3.0/build/oop/oop-min.js&3.3.0/build/dom/dom-base-min.js&3.3.0/build/dom/selector-native-min.js&3.3.0/build/dom/selector-css2-min.js&3.3.0/build/event-custom/event-custom-base-min.js&3.3.0/build/event/event-base-min.js&3.3.0/build/pluginhost/pluginhost-min.js&3.3.0/build/dom/dom-style-min.js&3.3.0/build/dom/dom-style-ie-min.js&3.3.0/build/dom/dom-screen-min.js&3.3.0/build/node/node-min.js&3.3.0/build/event/event-base-ie-min.js&3.3.0/build/event/event-delegate-min.js"></script>
+    <script src="baseconv.js"></script>
+    <script type="text/javascript">
+        YUI().use('node', 'baseconv', function(Y) {
+                    var ct = Y.one('#currentTime ul'),
+                        gst, tct, tctDec,
+                        base25 = Y.BaseConverter("0123456789abcdefghijklmno"),
+                        toTCT = function(dt) {
+                            return Math.floor(dt.valueOf()/1000) + (dt.getTimezoneOffset() * 60) + 9460771199;
+                        },
+                        updateTime = function() {
+                            var d = new Date(),
+                                tctVal = base25.encode(toTCT(d)).toUpperCase(),
+                                str;
+                            str = d.toUTCString().split(' ');
+                            str[3] = +str[3] + 300;
+                            str[5] = "GST";
+                            str = str.join(' ');
+                            gst.setContent(str);
+                            tct.setContent(tctVal.slice(0,-3) + "." + tctVal.slice(-3));
+                            str = base25.decode(tctVal.slice(0, -3)) + "." + base25.decode(tctVal[tctVal.length-3]) +
+                                " " + base25.decode(tctVal[tctVal.length-2]) +
+                                " " + base25.decode(tctVal[tctVal.length-1]);
+                            tctDec.setContent(str);
+                        };
+                    gst = Y.Node.create('<li />');
+                    ct.append(gst);
+                    tct = gst.cloneNode();
+                    ct.append(tct);
+                    tctDec = gst.cloneNode();
+                    ct.append(tctDec);
+                    Y.one('#currentTime').show();
+                    Y.later(500, Y, updateTime, null, true);
+                }); 
+    </script>
+</body>
+</html>
